@@ -1,0 +1,13 @@
+<input [(ngModel)]="name" placeholder="Nome">
+<br>
+<input [(ngModel)]="email" placeholder="email">
+<br>
+<input [(ngModel)]="password" placeholder="senha">
+<br>
+
+<button (click)="sendLogin()">Login</button>
+
+
+<app-login-filho [userLogin]="userLogin" ></app-login-filho>
+
+<p>{{userLogin.name}}</p>

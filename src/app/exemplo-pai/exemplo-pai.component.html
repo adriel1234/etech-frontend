@@ -1,0 +1,6 @@
+<h1> componete  pai </h1>
+<input [(ngModel)]="messagePai" placeholder="Nome">
+<p>{{messagePai}}</p>
+
+<app-exemplo-filho [messageFilho]="messagePai" (changeMessage)="changeMessagePai($event)"></app-exemplo-filho>
+<app-login-filho></app-login-filho>
