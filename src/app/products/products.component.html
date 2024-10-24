@@ -1,21 +1,26 @@
 <h1>Products</h1>
 
-<button mat-flat-button> Adicionar Produto</button>
-
+<button mat-flat-button>Adicionar produto</button>
 <mat-card>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef> Descrição </th>
-      <td mat-cell *matCellDef="let element">{{element.description}}</td>
-
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> id</th>
+      <td mat-cell *matCellDef="let element"> {{ element.id }}</td>
     </ng-container>
+
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Descrição</th>
+      <td mat-cell *matCellDef="let element"> {{ element.description }}</td>
+    </ng-container>
+
 
     <ng-container matColumnDef="quantity">
-      <th mat-header-cell *matCellDef>Quantidade</th>
-
-      <td mat-cell *matCellDef="let element">{{element.quantity}}</td>
+      <th mat-header-cell *matHeaderCellDef> Quantidade</th>
+      <td mat-cell *matCellDef="let element"> {{ element.quantity }}</td>
     </ng-container>
+
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
