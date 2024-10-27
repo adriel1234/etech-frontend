@@ -32,6 +32,7 @@ export class ProductListComponent implements OnInit {
   public dataSource: Product[] = [];
   public displayedColumns:string[] = ['id', 'description', 'quantity'];
   public searchValue:string = '';
+  public searchQtd: string = '';
 
   private parameters: HttpParams = new HttpParams();
 
@@ -43,6 +44,7 @@ export class ProductListComponent implements OnInit {
 
   public search(resetIndex: boolean = false): void {
     this.clearParameters();
+    this.addParameter('quantity_gt',this.searchQtd);
     this.addParameter('description', this.searchValue);
     this.getAll<Product>(URLS.PRODUCT).subscribe({
       next: (data: Product[]) => {
