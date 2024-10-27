@@ -1,0 +1,13 @@
+table{
+  width: 100%;
+  .mat-mdc-header-cell {
+    font-weight: bold;
+    background: #507b5d;
+    color: white;
+  }
+}
+
+
+.full-width{
+  width: 30%;
+}
