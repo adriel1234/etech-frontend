@@ -1,40 +1,58 @@
 import {Component, OnInit} from '@angular/core';
-import {Client} from '../../shared/models/client';
+import {Employee} from '../../shared/models/employee';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {URLS} from '../../shared/urls';
 import {Observable} from 'rxjs';
 import {HttpOptions} from '../../shared/http/http-options';
 import {MatCard} from '@angular/material/card';
-import {MatTableModule} from '@angular/material/table';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow, MatRowDef, MatTable
+} from '@angular/material/table';
+import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
-import {MatIcon} from '@angular/material/icon';
-import {MatPaginator} from '@angular/material/paginator';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
-  selector: 'app-client-list',
+  selector: 'app-employee-list',
   standalone: true,
   imports: [
     MatCard,
-    MatTableModule,
-    MatFormFieldModule,
-    FormsModule,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatFormField,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatIcon,
     MatIconButton,
     MatInput,
-    MatIcon,
-    MatPaginator,
-    MatButton,
+    MatLabel,
+    MatRow,
+    MatRowDef,
+    MatSuffix,
+    MatTable,
+    ReactiveFormsModule,
+    FormsModule,
+    MatHeaderCellDef,
+    MatButton
   ],
-  templateUrl: './client-list.component.html',
-  styleUrl: './client-list.component.css'
+  templateUrl: './employee-list.component.html',
+  styleUrl: './employee-list.component.css'
 })
-export class ClientListComponent implements OnInit {
-  public dataSource: Client[] = [];
-  public displayedColumns:string[] = ['id', 'name', 'age','rg','cpf','actions'];
+export class EmployeeListComponent implements OnInit {
+  public dataSource: Employee[] = [];
+  public displayedColumns:string[] = ['id', 'name', 'registration'];
   public searchValue:string = '';
-  public searchQtd: string = '';
+  public searchRegistration: string = '';
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
 
@@ -49,25 +67,25 @@ export class ClientListComponent implements OnInit {
 
   public search(resetIndex: boolean = false): void {
     this.clearParameters();
-    this.addParameter('age',this.searchQtd);
-    this.addParameter('name', this.searchValue);
-    this.getAll<Client>(URLS.CLIENT).subscribe({
-      next: (data: Client[]) => {
+    this.addParameter('name',this.searchRegistration);
+    this.addParameter('registration', this.searchValue);
+    this.getAll<Employee>(URLS.EMPLOYEE).subscribe({
+      next: (data: Employee[]) => {
         this.dataSource = data;
       },
       error: (_) => {
-        console.error('Error loading Clients');
+        console.error('Error loading Employees');
       }
     });
   }
 
   public deleteObject(id: number):void{
-    this.delete(id,URLS.CLIENT).subscribe({
+    this.delete(id,URLS.EMPLOYEE).subscribe({
       next:(_:any):void =>{
         this.search();
       },
       error: (_:any):void =>{
-        console.error('Error delete Client');
+        console.error('Error delete Employees');
       }
     })
   }
@@ -112,5 +130,5 @@ export class ClientListComponent implements OnInit {
     }
     return  httpOptions;
   }
-
 }
+

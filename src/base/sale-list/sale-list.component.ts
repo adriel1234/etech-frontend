@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Client} from '../../shared/models/client';
+import {Product} from '../../shared/models/product';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {URLS} from '../../shared/urls';
 import {Observable} from 'rxjs';
 import {HttpOptions} from '../../shared/http/http-options';
+import {Sale} from '../../shared/models/sale';
 import {MatCard} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -14,7 +15,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatPaginator} from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-client-list',
+  selector: 'app-sale-list',
   standalone: true,
   imports: [
     MatCard,
@@ -27,14 +28,14 @@ import {MatPaginator} from '@angular/material/paginator';
     MatPaginator,
     MatButton,
   ],
-  templateUrl: './client-list.component.html',
-  styleUrl: './client-list.component.css'
+  templateUrl: './sale-list.component.html',
+  styleUrl: './sale-list.component.css'
 })
-export class ClientListComponent implements OnInit {
-  public dataSource: Client[] = [];
-  public displayedColumns:string[] = ['id', 'name', 'age','rg','cpf','actions'];
+export class SaleListComponent  implements OnInit{
+  public dataSource: Sale[] = [];
+  public displayedColumns:string[] = ['id', 'nrf', 'employee','product','client','actions'];
   public searchValue:string = '';
-  public searchQtd: string = '';
+  public searchNRF: string = '';
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
 
@@ -49,25 +50,25 @@ export class ClientListComponent implements OnInit {
 
   public search(resetIndex: boolean = false): void {
     this.clearParameters();
-    this.addParameter('age',this.searchQtd);
-    this.addParameter('name', this.searchValue);
-    this.getAll<Client>(URLS.CLIENT).subscribe({
-      next: (data: Client[]) => {
+    this.addParameter('nrf',this.searchNRF);
+    this.addParameter('employee__id', this.searchValue);
+    this.getAll<Sale>(URLS.SALE).subscribe({
+      next: (data: Sale[]) => {
         this.dataSource = data;
       },
       error: (_) => {
-        console.error('Error loading Clients');
+        console.error('Error loading sales');
       }
     });
   }
 
   public deleteObject(id: number):void{
-    this.delete(id,URLS.CLIENT).subscribe({
+    this.delete(id,URLS.SALE).subscribe({
       next:(_:any):void =>{
         this.search();
       },
       error: (_:any):void =>{
-        console.error('Error delete Client');
+        console.error('Error delete sales');
       }
     })
   }

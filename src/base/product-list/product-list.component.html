@@ -2,26 +2,25 @@
 <div class="flex flex-column">
   <div>
     <mat-form-field class="full-width">
-      <mat-label>Pesquisar Quantidade maior </mat-label>
+      <mat-label>Pesquisar Quantidade maior</mat-label>
       <input matInput [(ngModel)]="searchQtd">
-      <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
-        <mat-icon>search</mat-icon>
-      </button>
+      <!--      <button matSuffix mat-icon-button aria-label="Search" (click)="search()">-->
+      <!--        <mat-icon>search</mat-icon>-->
+      <!--      </button>-->
     </mat-form-field>
   </div>
 
-<div>
-  <mat-form-field class="full-width">
-    <mat-label>Pesquisar Descrição</mat-label>
-    <input matInput [(ngModel)]="searchValue">
-    <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
-      <mat-icon>search</mat-icon>
-    </button>
-  </mat-form-field>
+  <div>
+    <mat-form-field class="full-width">
+      <mat-label>Pesquisar Descrição</mat-label>
+      <input matInput [(ngModel)]="searchValue">
+    </mat-form-field>
+  </div>
 
-</div>
-
-
+  <div class="example-button-row">
+    <button mat-flat-button (click)="search()">Pesuisar</button>
+  </div>
+  <br>
 </div>
 
 
