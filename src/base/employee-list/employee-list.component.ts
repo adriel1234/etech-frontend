@@ -16,7 +16,7 @@ import {
 } from '@angular/material/table';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatIcon} from '@angular/material/icon';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BaseService} from '../../shared/services/base.service';
@@ -45,7 +45,8 @@ import {Product} from '../../shared/models/product';
     ReactiveFormsModule,
     FormsModule,
     MatHeaderCellDef,
-    MatButton
+    MatButton,
+    MatFabButton
   ],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.css'
@@ -83,18 +84,16 @@ export class EmployeeListComponent implements OnInit {
       }
     });
   }
-  //
-  // public deleteObject(id: number):void{
-  //   this.service.delete(id,URLS.EMPLOYEE).subscribe({
-  //     next:(_:any):void =>{
-  //       this.search();
-  //     },
-  //     error: (_:any):void =>{
-  //       console.error('Error delete Employees');
-  //     }
-  //   })
-  // }
-  //service
 
+  public deleteObject(id:number): void{
+    this.service.delete(id).subscribe({
+      next:(_)=>{
+        this.search();
+      },
+      error:(_)=>{
+        console.error('Error deleting product');
+      }
+    });
+  }
 }
 
