@@ -4,13 +4,19 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions} from '@angular/material/form-field';
 
+
+const appearance: MatFormFieldDefaultOptions = {
+  appearance:'outline'
+};
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations(),  // Adiciona o suporte a animações
+    provideAnimations(),
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,useValue: appearance}
   ]
 };

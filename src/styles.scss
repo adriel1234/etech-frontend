@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@import 'primeflex/primeflex.css';
 
 $theme: mat.define-theme((
 color: (
