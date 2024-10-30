@@ -8,7 +8,7 @@ import {MatCard} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {MatPaginator} from '@angular/material/paginator';
@@ -28,6 +28,7 @@ import {Employee} from '../../shared/models/employee';
     MatIcon,
     MatPaginator,
     MatButton,
+    MatFabButton,
   ],
   templateUrl: './client-list.component.html',
   styleUrl: './client-list.component.css'
@@ -67,14 +68,14 @@ export class ClientListComponent implements OnInit {
     });
   }
 
-  // public deleteObject(id: number):void{
-  //   this.delete(id,URLS.CLIENT).subscribe({
-  //     next:(_:any):void =>{
-  //       this.search();
-  //     },
-  //     error: (_:any):void =>{
-  //       console.error('Error delete Client');
-  //     }
-  //   })
-  // }
+  public deleteObject(id:number): void{
+    this.service.delete(id).subscribe({
+      next:(_)=>{
+        this.search();
+      },
+      error:(_)=>{
+        console.error('Error deleting product');
+      }
+    });
+  }
 }
