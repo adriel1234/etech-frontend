@@ -1,25 +1,16 @@
 <h1>Lista de Clientes</h1>
-<div class="flex flex-column">
-  <div>
-    <mat-form-field class="full-width">
+<div class="flex gap-2">
+    <mat-form-field>
       <mat-label>Numero Nota</mat-label>
       <input matInput [(ngModel)]="searchNRF">
     </mat-form-field>
-  </div>
 
-  <div>
-    <mat-form-field class="full-width">
+    <mat-form-field>
       <mat-label>Pesquisar ID Funcionario</mat-label>
       <input matInput [(ngModel)]="searchValue">
     </mat-form-field>
 
-  </div>
-  <div class="example-button-row">
-    <button mat-flat-button (click)="search()">Pesuisar</button>
-  </div>
-
-
-<br>
+  <button mat-fab (click)="search()"><mat-icon>search</mat-icon></button>
 </div>
 
 
@@ -56,7 +47,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <button  mat-icon-button aria-label="delete" (click)="deleteObject(element.id)">
+        <button  mat-icon-button aria-label="delete">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -68,3 +59,9 @@
 
 
 </mat-card>
+
+@if(dataSource.length===0){
+  <div>
+    <h2>Nenhum Produto encontrado</h2>
+  </div>
+}
