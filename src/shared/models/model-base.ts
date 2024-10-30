@@ -1,4 +1,4 @@
-export interface ModelBase {
+export class ModelBase {
   id: number;
   createdAt: Date;
   modifiedAt: Date;
