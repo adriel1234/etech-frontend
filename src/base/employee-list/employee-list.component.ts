@@ -19,6 +19,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BaseService} from '../../shared/services/base.service';
+import {Product} from '../../shared/models/product';
 
 @Component({
   selector: 'app-employee-list',
@@ -50,26 +52,29 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 })
 export class EmployeeListComponent implements OnInit {
   public dataSource: Employee[] = [];
-  public displayedColumns:string[] = ['id', 'name', 'registration'];
+  public displayedColumns:string[] = ['id', 'name', 'registration','actions'];
   public searchValue:string = '';
   public searchRegistration: string = '';
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
+  // private router:Router = new Router();
 
-  private parameters: HttpParams = new HttpParams();
+  private service: BaseService<Employee>;
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.service = new BaseService<Employee>(http,URLS.EMPLOYEE);
+  }
 
   public ngOnInit(): void {
     this.search();
   }
 
   public search(resetIndex: boolean = false): void {
-    this.clearParameters();
-    this.addParameter('name',this.searchRegistration);
-    this.addParameter('registration', this.searchValue);
-    this.getAll<Employee>(URLS.EMPLOYEE).subscribe({
+    this.service.clearParameter();
+    this.service.addParameter('name',this.searchRegistration);
+    this.service.addParameter('registration', this.searchValue);
+    this.service.getAll().subscribe({
       next: (data: Employee[]) => {
         this.dataSource = data;
       },
@@ -78,57 +83,18 @@ export class EmployeeListComponent implements OnInit {
       }
     });
   }
-
-  public deleteObject(id: number):void{
-    this.delete(id,URLS.EMPLOYEE).subscribe({
-      next:(_:any):void =>{
-        this.search();
-      },
-      error: (_:any):void =>{
-        console.error('Error delete Employees');
-      }
-    })
-  }
+  //
+  // public deleteObject(id: number):void{
+  //   this.service.delete(id,URLS.EMPLOYEE).subscribe({
+  //     next:(_:any):void =>{
+  //       this.search();
+  //     },
+  //     error: (_:any):void =>{
+  //       console.error('Error delete Employees');
+  //     }
+  //   })
+  // }
   //service
 
-  public getAll<T>(route: string): Observable<T[]> {
-    const url = URLS.BASE + route;
-    return this.http.get<T[]>(url,this.getOptions());
-  }
-
-  public delete(id:number | string, route:string):Observable<any>{
-    this.clearParameters();
-    const url = URLS.BASE + route + id;
-
-    return this.http.delete<any>(url,this.getOptions());
-  }
-
-  public save<T>(entity: T, route:string): Observable<T> {
-    this.clearParameters();
-    const url = URLS.BASE + route;
-    return this.http.post<T>(url,entity,this.getOptions()) as Observable<T>;
-  }
-
-  public update<T>(id:number | string,entity: any): Observable<T> {
-    this.clearParameters();
-    const url = URLS.BASE+id+'/';
-    return this.http.patch<T>(url,entity,this.getOptions()) as Observable<T>;
-  }
-
-  public addParameter(key: string, value: string): void {
-    this.parameters = this.parameters.set(key, value);
-  }
-
-  public clearParameters(): void {
-    this.parameters = new HttpParams();
-  }
-
-  public getOptions(): HttpOptions {
-    const httpOptions: HttpOptions = {}
-    if(this.parameters){
-      httpOptions.params = this.parameters;
-    }
-    return  httpOptions;
-  }
 }
 
