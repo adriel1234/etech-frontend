@@ -68,14 +68,14 @@ export class SaleListComponent  implements OnInit{
     });
   }
 
-  // public deleteObject(id: number):void{
-  //   this.delete(id,URLS.SALE).subscribe({
-  //     next:(_:any):void =>{
-  //       this.search();
-  //     },
-  //     error: (_:any):void =>{
-  //       console.error('Error delete sales');
-  //     }
-  //   })
-  // }
+  public deleteObject(id:number): void{
+    this.service.delete(id).subscribe({
+      next:(_)=>{
+        this.search();
+      },
+      error:(_)=>{
+        console.error('Error deleting product');
+      }
+    });
+  }
 }
