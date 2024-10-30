@@ -12,6 +12,8 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {MatPaginator} from '@angular/material/paginator';
+import {BaseService} from '../../shared/services/base.service';
+import {Employee} from '../../shared/models/employee';
 
 @Component({
   selector: 'app-client-list',
@@ -40,18 +42,22 @@ export class ClientListComponent implements OnInit {
 
   private parameters: HttpParams = new HttpParams();
 
+  private service: BaseService<Client>;
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) {
+    this.service = new BaseService<Client>(http,URLS.CLIENT);
+  }
 
   public ngOnInit(): void {
     this.search();
   }
 
   public search(resetIndex: boolean = false): void {
-    this.clearParameters();
-    this.addParameter('age',this.searchQtd);
-    this.addParameter('name', this.searchValue);
-    this.getAll<Client>(URLS.CLIENT).subscribe({
+    this.service.clearParameter();
+    this.service.addParameter('age',this.searchQtd);
+    this.service.addParameter('name', this.searchValue);
+    this.service.getAll().subscribe({
       next: (data: Client[]) => {
         this.dataSource = data;
       },
@@ -61,56 +67,14 @@ export class ClientListComponent implements OnInit {
     });
   }
 
-  public deleteObject(id: number):void{
-    this.delete(id,URLS.CLIENT).subscribe({
-      next:(_:any):void =>{
-        this.search();
-      },
-      error: (_:any):void =>{
-        console.error('Error delete Client');
-      }
-    })
-  }
-  //service
-
-  public getAll<T>(route: string): Observable<T[]> {
-    const url = URLS.BASE + route;
-    return this.http.get<T[]>(url,this.getOptions());
-  }
-
-  public delete(id:number | string, route:string):Observable<any>{
-    this.clearParameters();
-    const url = URLS.BASE + route + id;
-
-    return this.http.delete<any>(url,this.getOptions());
-  }
-
-  public save<T>(entity: T, route:string): Observable<T> {
-    this.clearParameters();
-    const url = URLS.BASE + route;
-    return this.http.post<T>(url,entity,this.getOptions()) as Observable<T>;
-  }
-
-  public update<T>(id:number | string,entity: any): Observable<T> {
-    this.clearParameters();
-    const url = URLS.BASE+id+'/';
-    return this.http.patch<T>(url,entity,this.getOptions()) as Observable<T>;
-  }
-
-  public addParameter(key: string, value: string): void {
-    this.parameters = this.parameters.set(key, value);
-  }
-
-  public clearParameters(): void {
-    this.parameters = new HttpParams();
-  }
-
-  public getOptions(): HttpOptions {
-    const httpOptions: HttpOptions = {}
-    if(this.parameters){
-      httpOptions.params = this.parameters;
-    }
-    return  httpOptions;
-  }
-
+  // public deleteObject(id: number):void{
+  //   this.delete(id,URLS.CLIENT).subscribe({
+  //     next:(_:any):void =>{
+  //       this.search();
+  //     },
+  //     error: (_:any):void =>{
+  //       console.error('Error delete Client');
+  //     }
+  //   })
+  // }
 }
