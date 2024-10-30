@@ -7,7 +7,7 @@ import {MatCard} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {HttpOptions} from '../../shared/http/http-options';
@@ -28,6 +28,7 @@ import {BaseService} from '../../shared/services/base.service';
     MatIcon,
     MatPaginator,
     MatButton,
+    MatFabButton,
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
@@ -63,6 +64,17 @@ export class ProductListComponent implements OnInit {
       },
       error: (_) => {
         console.error('Error loading products');
+      }
+    });
+  }
+
+  public deleteObject(id:number): void{
+    this.service.delete(id).subscribe({
+      next:(_)=>{
+        this.search();
+      },
+      error:(_)=>{
+        console.error('Error deleting product');
       }
     });
   }

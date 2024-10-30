@@ -1,27 +1,19 @@
 <h1>Lista de Produtos</h1>
-<div class="flex flex-column">
-  <div>
-    <mat-form-field class="full-width">
-      <mat-label>Pesquisar Quantidade maior</mat-label>
-      <input matInput [(ngModel)]="searchQtd">
-      <!--      <button matSuffix mat-icon-button aria-label="Search" (click)="search()">-->
-      <!--        <mat-icon>search</mat-icon>-->
-      <!--      </button>-->
-    </mat-form-field>
-  </div>
 
-  <div>
-    <mat-form-field class="full-width">
-      <mat-label>Pesquisar Descrição</mat-label>
-      <input matInput [(ngModel)]="searchValue">
-    </mat-form-field>
-  </div>
+<div class="flex gap-4">
+  <mat-form-field class="full-width">
+    <mat-label>Pesquisar Quantidade maior</mat-label>
+    <input matInput [(ngModel)]="searchQtd">
+  </mat-form-field>
 
-  <div class="example-button-row">
-    <button mat-flat-button (click)="search()">Pesquisar</button>
-  </div>
-  <br>
+  <mat-form-field class="full-width">
+    <mat-label>Pesquisar Descrição</mat-label>
+    <input matInput [(ngModel)]="searchValue">
+  </mat-form-field>
+
+  <button mat-fab (click)="search()"><mat-icon>search</mat-icon></button>
 </div>
+
 
 
 <mat-card>
@@ -45,9 +37,12 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-      <button  mat-icon-button aria-label="delete">
-        <mat-icon>delete</mat-icon>
-      </button>
+        <button  mat-icon-button aria-label="editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button  mat-icon-button aria-label="delete" (click)="deleteObject(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </td>
     </ng-container>
 
