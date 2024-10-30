@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Product} from '../../../shared/models/product';
 import {BaseService} from '../../../shared/services/base.service';
 import {HttpClient} from '@angular/common/http';
 import {URLS} from '../../../shared/urls';
-import {MatError, MatFormField, MatFormFieldModule} from '@angular/material/form-field';
+import {MatError, MatFormField, MatFormFieldModule, MatLabel} from '@angular/material/form-field';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 
@@ -12,13 +12,12 @@ import {MatButton} from '@angular/material/button';
   selector: 'app-product-item',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatError,
+    MatLabel,
+    ReactiveFormsModule,
     MatButton,
-    // Add this if required
-
   ],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
