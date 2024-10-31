@@ -1,0 +1,416 @@
+comandos para inicializar um projeto angular
+no backend instalar:
+- pip install django-cors-headers
+
+alterações no settings.py
+
+- colocar o 'corsheaders' no INSTALLED_APPS
+- colocar o 'corsheaders.middleware.CorsMiddleware' no MIDDLEWARE
+- adicionar na ultima linha CORS_ALLOW_ALL_ORIGINS = True 
+
+alteração no viewsets.py:
+
+comentar as linha:
+permission_classes = {permissions.IsAuthenticated}
+
+1 - instalar cli do angular
+ npm install -g @angular/cli
+
+2 - criar um projeto angular
+
+ ng  new tecommerce-frontend
+
+ - yes
+ - selecionar o css
+ - y
+
+3 - abrir o projeto tecommerce-frontend no webstorm.
+
+4 - npm install
+
+ - criar a pasta base local: src/
+ - criar a pasta no shared local : src/
+
+-------------------------------------------------------------------
+
+
+5 -  editar app.config.ts local:  src/app/
+
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideClientHydration } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideClientHydration(),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),  // Adiciona o suporte a animações
+  ]
+};
+
+
+6 - fazer a instalação do material na raiz do projeto
+PS C:\Projetos\etech\angular\tecommerce-frontend>
+comando: npm install @angular/material
+comando: npm install primeflex
+
+7 - editar o src/style.css para src/style.scss no arquivo angular.json e alterar a extensão do arquivo /src/style.css para /src/style.scss
+ - editar o angular.json local raiz do projeto
+
+            "styles": [
+              "src/styles.scss"
+            ],
+
+
+ - conteudo do src/style.scss: 
+
+@use '@angular/material' as mat;
+
+$theme: mat.define-theme((
+color: (
+theme-type: light,
+primary: mat.$azure-palette,
+tertiary: mat.$blue-palette,
+)
+));
+
+body {
+font-family: Roboto, "Helvetica Neue", sans-serif;
+margin: 0;
+padding: 30px;
+height: 100%;
+
+@include mat.all-component-themes($theme);
+}
+
+html {
+height: 100%;
+}
+
+@include mat.core();
+@include mat.color-variants-backwards-compatibility($theme);
+
+--------------------------------------------------------------------
+
+arquivo src/index.html
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TecommerceFrontend1</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Robot:wght@300;400;500&display=wrap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="mat-typography mat-app-background">
+  <app-root></app-root>
+</body>
+</html>
+
+
+-----------------------------------------------------------------------
+8 - abrir o termnial dentro de base criar um componete products.
+PS C:\Projetos\etech\angular\tecommerce-frontend\src\base> 
+
+comando: ng g c product-list
+
+estrutura: src/base/product-list
+
+9 - criar uma arquivo model-base.ts em src/shared/models/
+ - criar a pasta shared dentro de src
+ - criar uma pasta models dentro de shared
+ - criar o arquivo model-base.ts dentro de shared
+
+model-base.ts	
+export interface ModelBase {
+  id: number;
+  createdAt: Date;
+  modifiedAt: Date;
+  active: boolean;
+}
+
+10 - criar uma arquivo product.ts em src/shared/models/
+import {ModelBase} from './model-base';
+
+export interface Product extends ModelBase{
+  description:string;
+  quantity:string;
+}
+
+11 - criar o arquivo http-options.ts e a pasta http em src/shared
+http-options.ts
+
+import {HttpParams} from '@angular/common/http';
+
+export interface HttpOptions {
+  params?: HttpParams;
+  responseType?: any;
+}
+
+
+estrutura src/shared/http/http-options.ts
+
+12 - criar o arquivo urls.ts: local: src/shared/
+
+export const URLS = {
+    BASE:'http://localhost:8000/',
+    PRODUCT: '/teste/product/',
+    CLIENT: '/teste/client/'};
+
+
+----------------------------------------------------------------------------
+
+
+12 - editar app.component.ts local: src/app/
+
+import {Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  standalone:true,
+  imports:[RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  
+}
+
+12 - editar app.compenent.html local: src/app/
+
+<router-outlet></router-outlet>
+
+13 - editar o app.routes.ts local: src/app/
+
+import { Routes } from '@angular/router';
+import {ProductListComponent} from '../base/product-list/product-list.component';
+
+export const routes: Routes = [
+  {
+    path: 'product',
+    component: ProductListComponent,
+  }
+];
+
+--------------------------------------------------------------------------------------------------------
+16 - editar o product-list.compnent.ts local: src/base/product-list/
+
+import {Component, OnInit} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import { Product } from '../../shared/models/product';
+import {elementAt, Observable} from 'rxjs';
+import { URLS } from '../../shared/urls';
+import {MatCard} from '@angular/material/card';
+import {MatTableModule} from '@angular/material/table';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {MatIconButton} from '@angular/material/button';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {HttpOptions} from '../../shared/http/http-options';
+import {MatPaginator} from '@angular/material/paginator';
+import * as url from 'node:url';
+
+@Component({
+  selector: 'app-product-list',
+  standalone: true,
+  imports: [
+    MatCard,
+    MatTableModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatIconButton,
+    MatInput,
+    MatIcon,
+    MatPaginator,
+  ],
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.css']
+})
+export class ProductListComponent implements OnInit {
+  public dataSource: Product[] = [];
+  public displayedColumns:string[] = ['id', 'description', 'quantity','actions'];
+  public searchValue:string = '';
+  public searchQtd: string = '';
+
+  // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
+
+  private parameters: HttpParams = new HttpParams();
+
+
+  constructor(private http: HttpClient) {}
+
+  public ngOnInit(): void {
+    this.search();
+  }
+
+  public search(resetIndex: boolean = false): void {
+    this.clearParameters();
+    this.addParameter('quantity_gt',this.searchQtd);
+    this.addParameter('description', this.searchValue);
+    this.getAll<Product>(URLS.PRODUCT).subscribe({
+      next: (data: Product[]) => {
+        this.dataSource = data;
+      },
+      error: (_) => {
+        console.error('Error loading products');
+      }
+    });
+  }
+
+public deleteObject(id: number):void{
+    this.delete(id,URLS.PRODUCT).subscribe({
+      next:(_:any):void =>{
+        this.search();
+      },
+      error: (_:any):void =>{
+        console.error('Error delete products');
+      }
+    })
+}
+  //service
+
+  public getAll<T>(route: string): Observable<T[]> {
+    const url = URLS.BASE + route;
+    return this.http.get<T[]>(url,this.getOptions());
+  }
+
+  public delete(id:number | string, route:string):Observable<any>{
+    this.clearParameters();
+    const url = URLS.BASE + route + id;
+
+    return this.http.delete<any>(url,this.getOptions());
+  }
+
+ public save<T>(entity: T, route:string): Observable<T> {
+   this.clearParameters();
+   const url = URLS.BASE + route;
+   return this.http.post<T>(url,entity,this.getOptions()) as Observable<T>;
+ }
+
+  public update<T>(id:number | string,entity: any): Observable<T> {
+    this.clearParameters();
+    const url = URLS.BASE+id+'/';
+    return this.http.patch<T>(url,entity,this.getOptions()) as Observable<T>;
+  }
+
+  public addParameter(key: string, value: string): void {
+    this.parameters = this.parameters.set(key, value);
+  }
+
+  public clearParameters(): void {
+    this.parameters = new HttpParams();
+  }
+
+  public getOptions(): HttpOptions {
+    const httpOptions: HttpOptions = {}
+    if(this.parameters){
+      httpOptions.params = this.parameters;
+    }
+    return  httpOptions;
+  }
+
+
+  protected readonly elementAt = elementAt;
+}
+
+
+
+16 - editar o product-item-componente.ts: local src/app/products/product/product-item
+
+import {Component, Injector, OnInit} from '@angular/core';
+
+@Component({
+  selector: 'app-product-item',
+  standalone:true,
+  imports:[],
+  templateUrl: './product-item.component.html',
+  styleUrl: './product-item.component.css'
+})
+export class ProductItemComponent{
+
+
+}
+
+
+--------------------------------------------------------------------------------------
+
+17 - editar o product-list.component.html local: src/base/product-list/
+
+<h1>Lista de Produtos</h1>
+<div class="flex flex-column">
+  <div>
+    <mat-form-field class="full-width">
+      <mat-label>Pesquisar Quantidade maior </mat-label>
+      <input matInput [(ngModel)]="searchQtd">
+      <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+<div>
+  <mat-form-field class="full-width">
+    <mat-label>Pesquisar Descrição</mat-label>
+    <input matInput [(ngModel)]="searchValue">
+    <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
+</div>
+
+
+</div>
+
+
+<mat-card>
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>Cod.</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Descrição</th>
+      <td mat-cell *matCellDef="let element">{{element.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+      <td mat-cell *matCellDef="let element">{{element.quantity}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+      <button  mat-icon-button aria-label="delete" (click)="deleteObject(element.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+
+</mat-card>
+
+
+
+
+18 - executar o python manager.py runserver no projeto backend
+
+19 - executar a apliação e ir ao navegador acessar: http://localhost:4200/product
+
