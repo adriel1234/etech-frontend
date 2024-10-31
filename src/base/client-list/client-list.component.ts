@@ -14,6 +14,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatPaginator} from '@angular/material/paginator';
 import {BaseService} from '../../shared/services/base.service';
 import {Employee} from '../../shared/models/employee';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-client-list',
@@ -41,7 +42,7 @@ export class ClientListComponent implements OnInit {
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
 
-  private parameters: HttpParams = new HttpParams();
+  private router:Router = new Router();
 
   private service: BaseService<Client>;
 
@@ -78,4 +79,11 @@ export class ClientListComponent implements OnInit {
       }
     });
   }
+
+  public goToPage(route:string):void{
+    const extras: NavigationExtras = {queryParamsHandling:'merge'};
+    this.router.navigate([route],extras).then();
+  }
+
+
 }

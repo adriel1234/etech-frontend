@@ -21,6 +21,7 @@ import {MatInput} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BaseService} from '../../shared/services/base.service';
 import {Product} from '../../shared/models/product';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
@@ -58,7 +59,7 @@ export class EmployeeListComponent implements OnInit {
   public searchRegistration: string = '';
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
-  // private router:Router = new Router();
+  private router:Router = new Router();
 
   private service: BaseService<Employee>;
 
@@ -94,6 +95,11 @@ export class EmployeeListComponent implements OnInit {
         console.error('Error deleting product');
       }
     });
+  }
+
+  public goToPage(route:string):void{
+    const extras: NavigationExtras = {queryParamsHandling:'merge'};
+    this.router.navigate([route],extras).then();
   }
 }
 

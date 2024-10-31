@@ -14,6 +14,7 @@ import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {MatPaginator} from '@angular/material/paginator';
 import {BaseService} from '../../shared/services/base.service';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-sale-list',
@@ -41,6 +42,7 @@ export class SaleListComponent  implements OnInit{
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
 
+  private router:Router = new Router();
 
   private service: BaseService<Sale>;
 
@@ -77,5 +79,10 @@ export class SaleListComponent  implements OnInit{
         console.error('Error deleting product');
       }
     });
+  }
+
+  public goToPage(route:string):void{
+    const extras: NavigationExtras = {queryParamsHandling:'merge'};
+    this.router.navigate([route],extras).then();
   }
 }

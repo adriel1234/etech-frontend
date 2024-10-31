@@ -1,6 +1,6 @@
 export const URLS = {
     BASE: 'http://localhost:8000/',
-    PRODUCT: 'teste/product/',
-    CLIENT: 'teste/client/',
-    EMPLOYEE:'teste/employee/',
-    SALE: 'teste/sale/'};
+    PRODUCT: 'core/product/',
+    CLIENT: 'core/client/',
+    EMPLOYEE:'core/employee/',
+    SALE: 'core/sale/'};

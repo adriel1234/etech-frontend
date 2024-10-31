@@ -6,7 +6,7 @@ import {URLS} from '../../../shared/urls';
 import { MatFormFieldModule, MatLabel} from '@angular/material/form-field';
 import { MatInputModule} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
-import {BaseComponent} from '../../base_component';
+import {BaseComponent} from '../../base.component';
 
 @Component({
   selector: 'app-product-item',
