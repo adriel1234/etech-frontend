@@ -1,0 +1,25 @@
+<div class="flex flex-column gap-1">
+  <h1>CADASTRO DE FUNCIONÁRIO</h1>
+
+  <form [formGroup]="formGroup">
+    <div class="flex flex-column gap-3 mb-4">
+      <mat-form-field>
+        <mat-label>Nome</mat-label>
+        <input matInput type="text" formControlName="name" autofocus required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Matricula</mat-label>
+        <input matInput type="text" formControlName="registration" required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <button mat-flat-button class="btn-default" id="save" type="submit"
+            (click)="saveOrUpdate()"
+            [disabled]="!formGroup.valid"> Salvar Produto
+    </button>
+  </form>
+</div>
