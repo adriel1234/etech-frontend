@@ -1,13 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Product} from '../../../shared/models/product';
-import {BaseService} from '../../../shared/services/base.service';
 import {HttpClient} from '@angular/common/http';
 import {URLS} from '../../../shared/urls';
-import {MatError, MatFormField, MatFormFieldModule, MatLabel} from '@angular/material/form-field';
-import {MatInput, MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule, MatLabel} from '@angular/material/form-field';
+import { MatInputModule} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
-import {NavigationExtras, Router} from '@angular/router';
 import {BaseComponent} from '../../base_component';
 
 @Component({
