@@ -10,8 +10,22 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Matricula</mat-label>
-        <input matInput type="text" formControlName="registration" required>
+        <mat-label>Idade</mat-label>
+        <input matInput type="number" formControlName="age" required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field>
+        <mat-label>RG</mat-label>
+        <input matInput type="text" formControlName="rg" required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field>
+        <mat-label>CPF</mat-label>
+        <input matInput type="text" formControlName="cpf" required>
         <mat-error>Campo inválido</mat-error>
       </mat-form-field>
 
@@ -19,7 +33,7 @@
 
     <button mat-flat-button class="btn-default" id="save" type="submit"
             (click)="saveOrUpdate()"
-            [disabled]="!formGroup.valid"> Salvar Salvar Funcionario
+            [disabled]="!formGroup.valid"> Salvar Cliente
     </button>
   </form>
 </div>
