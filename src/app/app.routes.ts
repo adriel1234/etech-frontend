@@ -4,6 +4,7 @@ import {ClientListComponent} from '../base/client-list/client-list.component';
 import {SaleListComponent} from '../base/sale-list/sale-list.component';
 import {EmployeeListComponent} from '../base/employee-list/employee-list.component';
 import {ProductItemComponent} from '../base/product-list/product-item/product-item.component';
+import {EmployeeItemComponent} from '../base/employee-list/employee-item/employee-item.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'employee',
     component: EmployeeListComponent,
+  },
+  {
+    path: 'employee/:action',
+    component: EmployeeItemComponent,
   },
   {
     path: 'sale',
