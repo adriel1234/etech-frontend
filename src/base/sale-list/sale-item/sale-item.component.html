@@ -1,31 +1,31 @@
 <div class="flex flex-column gap-1">
-  <h1>CADASTRO DE CLIENTE</h1>
+  <h1>CADASTRO DE VENDA</h1>
 
   <form [formGroup]="formGroup">
     <div class="flex flex-column gap-3 mb-4">
       <mat-form-field>
-        <mat-label>Nome</mat-label>
-        <input matInput type="text" formControlName="name" autofocus required>
+        <mat-label>nrf</mat-label>
+        <input matInput type="text" formControlName="nrf" autofocus required>
         <mat-error>Campo inválido</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Idade</mat-label>
-        <input matInput type="number" formControlName="age" required>
-        <mat-error>Campo inválido</mat-error>
-      </mat-form-field>
-
-
-      <mat-form-field>
-        <mat-label>RG</mat-label>
-        <input matInput type="text" formControlName="rg" required>
+        <mat-label>Funcionário</mat-label>
+        <input matInput type="text" formControlName="employee" required>
         <mat-error>Campo inválido</mat-error>
       </mat-form-field>
 
 
       <mat-form-field>
-        <mat-label>CPF</mat-label>
-        <input matInput type="text" formControlName="cpf" required>
+        <mat-label>Produto</mat-label>
+        <input matInput type="text" formControlName="product" required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field>
+        <mat-label>Cliente</mat-label>
+        <input matInput type="text" formControlName="client" required>
         <mat-error>Campo inválido</mat-error>
       </mat-form-field>
 
@@ -33,7 +33,7 @@
 
     <button mat-flat-button class="btn-default" id="save" type="submit"
             (click)="saveOrUpdate()"
-            [disabled]="!formGroup.valid"> Salvar Cliente
+            [disabled]="!formGroup.valid"> Salvar Venda
     </button>
   </form>
 </div>

@@ -6,6 +6,7 @@ import {EmployeeListComponent} from '../base/employee-list/employee-list.compone
 import {ProductItemComponent} from '../base/product-list/product-item/product-item.component';
 import {EmployeeItemComponent} from '../base/employee-list/employee-item/employee-item.component';
 import {ClientItemComponent} from '../base/client-list/client-item/client-item.component';
+import {SaleItemComponent} from '../base/sale-list/sale-item/sale-item.component';
 
 export const routes: Routes = [
   {
@@ -35,5 +36,9 @@ export const routes: Routes = [
   {
     path: 'sale',
     component: SaleListComponent,
+  },
+  {
+    path: 'sale/:action',
+    component: SaleItemComponent,
   }
 ];
