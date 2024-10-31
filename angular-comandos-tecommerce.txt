@@ -155,6 +155,7 @@ arquivo src/index.html
 </html>
 
 
+
 -----------------------------------------------------------------------
 8 - abrir o termnial dentro de base criar um componete products.
 PS C:\Projetos\etech\angular\tecommerce-frontend\src\base> 
@@ -175,6 +176,78 @@ export interface ModelBase {
   modifiedAt: Date;
   active: boolean;
 }
+
+
+---------------------------------------------------------
+criar o arquivo /src/shared/services/base.service.ts
+
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {URLS} from '../urls';
+import {HttpOptions} from '../http/http-options';
+
+export class BaseService<T> {
+  public fullUrl: string;
+
+  private parameters: HttpParams = new HttpParams();
+
+  constructor(
+    public http: HttpClient,
+    public path: string
+  ) {
+    this.fullUrl = `${URLS.BASE}${path}`;
+  }
+
+  public addParameter(key: string, value: string): void {
+    this.parameters = this.parameters.set(key, value);
+  }
+
+  public clearParameter(): void {
+    this.parameters = new HttpParams();
+  }
+
+  public getOptions(): HttpOptions {
+    const httpOptions: HttpOptions = {};
+    if (this.parameters) {
+      httpOptions.params = this.parameters;
+    }
+    return httpOptions;
+  }
+
+  public getAll(): Observable<T[]> {
+    const url = this.fullUrl;
+    return this.http.get<T[]>(url, this.getOptions());
+  }
+
+  public getById(id: number | string): Observable<T> {
+    const url = `${this.fullUrl}${id}/`;
+    return this.http.get<T>(url, this.getOptions());
+  }
+
+  public delete(id: number | string): Observable<any> {
+    this.clearParameter();
+    const url = `${this.fullUrl}${id}/`;
+    return this.http.delete<any>(url, this.getOptions());
+  }
+
+  public save(entity: T): Observable<T> {
+    this.clearParameter();
+    const url = this.fullUrl;
+    return this.http.post<T>(url, entity, this.getOptions()) as Observable<T>;
+  }
+
+  public update(id: number | string, entity: any): Observable<T> {
+    this.clearParameter();
+    const url = `${this.fullUrl}${id}/`;
+    return this.http.patch<T>(url, entity, this.getOptions()) as Observable<T>;
+  }
+
+}
+
+
+
+
+----------------------------------------------------------------------
 
 10 - criar uma arquivo product.ts em src/shared/models/
 import {ModelBase} from './model-base';
@@ -245,19 +318,21 @@ export const routes: Routes = [
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { Product } from '../../shared/models/product';
+import {Product} from '../../shared/models/product';
 import {elementAt, Observable} from 'rxjs';
-import { URLS } from '../../shared/urls';
+import {URLS} from '../../shared/urls';
 import {MatCard} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {HttpOptions} from '../../shared/http/http-options';
 import {MatPaginator} from '@angular/material/paginator';
 import * as url from 'node:url';
+import {BaseService} from '../../shared/services/base.service';
+import {NavigationExtras, Router} from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -271,32 +346,38 @@ import * as url from 'node:url';
     MatInput,
     MatIcon,
     MatPaginator,
+    MatButton,
+    MatFabButton,
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
   public dataSource: Product[] = [];
-  public displayedColumns:string[] = ['id', 'description', 'quantity','actions'];
-  public searchValue:string = '';
+  public displayedColumns: string[] = ['id', 'description', 'quantity', 'actions'];
+  public searchValue: string = '';
   public searchQtd: string = '';
 
   // @ViewChild(MatPaginator, {static:true}) paginator: MatPaginator;
 
-  private parameters: HttpParams = new HttpParams();
+  private router:Router = new Router();
+
+  private service: BaseService<Product>;
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.service = new BaseService<Product>(http,URLS.PRODUCT);
+  }
 
   public ngOnInit(): void {
     this.search();
   }
 
   public search(resetIndex: boolean = false): void {
-    this.clearParameters();
-    this.addParameter('quantity_gt',this.searchQtd);
-    this.addParameter('description', this.searchValue);
-    this.getAll<Product>(URLS.PRODUCT).subscribe({
+    this.service.clearParameter();
+    this.service.addParameter('quantity_gt', this.searchQtd);
+    this.service.addParameter('description', this.searchValue);
+    this.service.getAll().subscribe({
       next: (data: Product[]) => {
         this.dataSource = data;
       },
@@ -306,78 +387,134 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-public deleteObject(id: number):void{
-    this.delete(id,URLS.PRODUCT).subscribe({
-      next:(_:any):void =>{
+  public deleteObject(id:number): void{
+    this.service.delete(id).subscribe({
+      next:(_)=>{
         this.search();
       },
-      error: (_:any):void =>{
-        console.error('Error delete products');
+      error:(_)=>{
+        console.error('Error deleting product');
       }
-    })
+    });
+  }
+
+  public goToPage(route: string): void {
+    const extras: NavigationExtras = {queryParamsHandling: 'merge'};
+    this.router.navigate([route], extras).then();
+  }
+
 }
-  //service
-
-  public getAll<T>(route: string): Observable<T[]> {
-    const url = URLS.BASE + route;
-    return this.http.get<T[]>(url,this.getOptions());
-  }
-
-  public delete(id:number | string, route:string):Observable<any>{
-    this.clearParameters();
-    const url = URLS.BASE + route + id;
-
-    return this.http.delete<any>(url,this.getOptions());
-  }
-
- public save<T>(entity: T, route:string): Observable<T> {
-   this.clearParameters();
-   const url = URLS.BASE + route;
-   return this.http.post<T>(url,entity,this.getOptions()) as Observable<T>;
- }
-
-  public update<T>(id:number | string,entity: any): Observable<T> {
-    this.clearParameters();
-    const url = URLS.BASE+id+'/';
-    return this.http.patch<T>(url,entity,this.getOptions()) as Observable<T>;
-  }
-
-  public addParameter(key: string, value: string): void {
-    this.parameters = this.parameters.set(key, value);
-  }
-
-  public clearParameters(): void {
-    this.parameters = new HttpParams();
-  }
-
-  public getOptions(): HttpOptions {
-    const httpOptions: HttpOptions = {}
-    if(this.parameters){
-      httpOptions.params = this.parameters;
-    }
-    return  httpOptions;
-  }
-
-
-  protected readonly elementAt = elementAt;
-}
-
-
 
 16 - editar o product-item-componente.ts: local src/app/products/product/product-item
 
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Product} from '../../../shared/models/product';
+import {HttpClient} from '@angular/common/http';
+import {URLS} from '../../../shared/urls';
+import { MatFormFieldModule, MatLabel} from '@angular/material/form-field';
+import { MatInputModule} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
+import {BaseComponent} from '../../base.component';
 
 @Component({
   selector: 'app-product-item',
-  standalone:true,
-  imports:[],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatLabel,
+    ReactiveFormsModule,
+    MatButton,
+  ],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css'
 })
-export class ProductItemComponent{
+export class ProductItemComponent extends BaseComponent<Product> implements OnInit{
+  public formGroup: FormGroup;
+  public object: Product = new Product();
 
 
+  constructor(http: HttpClient) {
+    super(http, URLS.PRODUCT)
+  }
+
+  public ngOnInit(): void{
+    this.formGroup = new FormGroup({
+      description: new FormControl('',[Validators.required]),
+      quantity: new FormControl('',[Validators.required])
+    });
+  }
+
+
+  public saveOrUpdate():void{
+    if(this.formGroup.valid){
+      Object.keys(this.formGroup.getRawValue()).forEach((key:string)=>{
+        const value = this.formGroup.getRawValue()[key];
+        if(value !== null && value !== undefined){
+          this.object[key] = value;
+        }
+      });
+
+      this.service.save(this.object).subscribe((response)=>{
+        this.goToPage('product');
+        console.log(response);
+      });
+    }
+
+  }
+
+}
+-------------------------------------------------------------------------------------
+editar o product-item-componente.html local src/app/products/product/product-item
+
+<div class="flex flex-column gap-1">
+  <h1>CADASTRO DE PRODUTO</h1>
+
+  <form [formGroup]="formGroup">
+    <div class="flex flex-column gap-3 mb-4">
+      <mat-form-field>
+        <mat-label>Descrição</mat-label>
+        <input matInput type="text" formControlName="description" autofocus required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Quantidade</mat-label>
+        <input matInput type="number" formControlName="quantity" required>
+        <mat-error>Campo inválido</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <button mat-flat-button class="btn-default" id="save" type="submit"
+            (click)="saveOrUpdate()"
+            [disabled]="!formGroup.valid"> Salvar Produto
+    </button>
+  </form>
+</div>
+
+----------------------------------------------------------------------------------------
+
+
+criar o arquivo src/base/base.component.ts
+
+import {NavigationExtras, Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {BaseService} from '../shared/services/base.service';
+
+export class BaseComponent<T> {
+  private router: Router = new Router();
+  public  service: BaseService<T>;
+  constructor(http: HttpClient, url: string) {
+    this.service = new BaseService<T>(http, url);
+  }
+
+  public goToPage(route: string): void {
+    const extras: NavigationExtras = {queryParamsHandling: 'merge'};
+    this.router.navigate([route], extras).then();
+  }
 }
 
 
@@ -386,30 +523,24 @@ export class ProductItemComponent{
 17 - editar o product-list.component.html local: src/base/product-list/
 
 <h1>Lista de Produtos</h1>
-<div class="flex flex-column">
-  <div>
-    <mat-form-field class="full-width">
-      <mat-label>Pesquisar Quantidade maior </mat-label>
-      <input matInput [(ngModel)]="searchQtd">
-      <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
 
-<div>
+<div class="flex gap-4">
+
+  <mat-form-field class="full-width">
+    <mat-label>Pesquisar Quantidade maior</mat-label>
+    <input matInput [(ngModel)]="searchQtd">
+  </mat-form-field>
+
   <mat-form-field class="full-width">
     <mat-label>Pesquisar Descrição</mat-label>
     <input matInput [(ngModel)]="searchValue">
-    <button matSuffix mat-icon-button aria-label="Search" (click)="search()">
-      <mat-icon>search</mat-icon>
-    </button>
   </mat-form-field>
 
+  <button mat-fab (click)="search()"><mat-icon>search</mat-icon></button>
+
+  <button mat-fab (click)="goToPage('product/create')"><mat-icon>add</mat-icon></button>
 </div>
 
-
-</div>
 
 
 <mat-card>
@@ -433,9 +564,12 @@ export class ProductItemComponent{
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-      <button  mat-icon-button aria-label="delete" (click)="deleteObject(element.id)">
-        <mat-icon>delete</mat-icon>
-      </button>
+        <button  mat-icon-button aria-label="edit"  (click)="goToPage('product/'+element.id)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button  mat-icon-button aria-label="delete" (click)="deleteObject(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </td>
     </ng-container>
 
@@ -445,6 +579,8 @@ export class ProductItemComponent{
 
 
 </mat-card>
+
+
 
 
 
